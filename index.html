@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!--
 =========================================================================
-  MANNA v1.0  -  a soccer habit tracker that installs on your phone
+  ASCEND v1.0  -  a soccer habit tracker that installs on your phone
 =========================================================================
   HOW THE CARD SYSTEM IS ORGANIZED (plain English)
 
@@ -773,33 +773,11 @@ select.txt{appearance:none;-webkit-appearance:none;background-image:linear-gradi
 .po-btns{display:flex;flex-direction:column;width:100%;max-width:340px;gap:4px}
 @media (prefers-reduced-motion:reduce){.tc,.tc-sweep,.tc-body::after,.ov-patina,.ov-frost,.ov-fire,.ov-core,.etch,.boltflick,.edgeflash,.smolderedge,.tc-glow,.tc-photo img,.tc-mono,.tc-body{animation:none!important;transition:none!important}.tc{transform:none}.po-pack,.bx-pack,.po-tap{animation:none}}
 
-
-/* ---------- Color rules ----------
-   Gold: only for things you earned (day goal hit, cards, rewards).
-   Ice: freezes. Green: rest days and vacation. Blue and pink stay the brand. */
-:root{--gold:#F5C451;--gold-hi:#FFE08A;--gold-soft:rgba(245,196,81,.11);--ice:#9FE0FF;--ice-soft:rgba(159,224,255,.11)}
-.banner.card,.banner.reward{background:var(--gold-soft);border-color:rgba(245,196,81,.5)}
-.banner.card .ic,.banner.card .banner-t,.banner.reward .ic,.banner.reward .banner-t{color:var(--gold)}
-.banner.ice{background:var(--ice-soft);border-color:rgba(159,224,255,.45)}
-.banner.ice .ic,.banner.ice .banner-t{color:var(--ice)}
-.freeze-chip,.tag.ice{color:var(--ice)}
-.tag.ice{background:var(--ice-soft)}
-.freeze-chip.none{color:var(--text3)}
-.hrow-pct.hit{color:var(--gold)}
-/* Today: the color fills in as the day does */
-.dawn-tint{position:absolute;inset:0;pointer-events:none;opacity:calc(var(--prog,0) * .55);transition:opacity 1.2s ease;
-  background:radial-gradient(70% 55% at 18% 8%,rgba(41,82,227,.55),transparent 70%),radial-gradient(65% 50% at 88% 30%,rgba(255,20,147,.42),transparent 72%)}
-.dawn.hit .rc-n{background:linear-gradient(180deg,var(--gold-hi),var(--gold));-webkit-background-clip:text;background-clip:text;color:transparent}
-.dawn.hit .rc-n span{color:var(--gold)}
-.rings-box::after{content:"";position:absolute;inset:-8%;border-radius:50%;z-index:-1;pointer-events:none;opacity:0;transition:opacity 1.2s ease;
-  background:radial-gradient(closest-side,rgba(245,196,81,.24),rgba(245,196,81,.06) 60%,transparent 75%)}
-.dawn.hit .rings-box::after{opacity:1}
-@media (prefers-reduced-motion:reduce){.dawn-tint,.rings-box::after{transition:none}}
 </style>
 </head>
 <body>
 <section class="dawn" id="dawn" aria-label="Today at a glance">
-  <div class="dawn-bg" id="dawnBg" aria-hidden="true"><canvas id="dawnCanvas"></canvas><div class="dawn-scrim"></div><div class="dawn-tint"></div></div>
+  <div class="dawn-bg" id="dawnBg" aria-hidden="true"><canvas id="dawnCanvas"></canvas><div class="dawn-scrim"></div></div>
   <div class="dawn-inner" id="dawnInner">
     <div class="dawn-top">
       <div><h1 class="greet" id="dawnGreet">Morning.</h1><div class="greet-sub" id="dawnSub"></div><div class="dawn-verse" id="dawnVerse" data-action="editAffirm" role="button" tabindex="0" aria-label="This week's verse"></div></div>
@@ -879,85 +857,85 @@ const CARD_TIERS = [
   {id:"wood", name:"Wood", ovr:0, days:0, family:"wood", shape:"carved", material:"wood", border:"carved", idle:"lamp",
    colors:{base:["#7A4A26","#4E2E17","#2A170A"], frame:["#C08A55","#5C3A1E"], ink:"#FFF3E2", accent:"#E7B77F", flare:"#E0A060"},
    effects:[{fx:"motes", shape:"dust", color:"#F2C890", count:16, dir:"drift", size:1.3, alpha:.55}]},
-  {id:"basalt", name:"Basalt", ovr:44, days:3, family:"stone", shape:"rough", material:"basalt", border:"chips", idle:"none",
+  {id:"basalt", name:"Basalt", ovr:44, days:0, family:"stone", shape:"rough", material:"basalt", border:"chips", idle:"none",
    colors:{base:["#3A3A3E","#232326","#111113"], frame:["#6B6B70","#2A2A2E"], ink:"#E9E9EC", accent:"#9A9AA2", flare:"#8C8C96"},
    effects:[{fx:"motes", shape:"dust", color:"#B8B8C0", count:18, dir:"down", size:1.1, alpha:.45}]},
-  {id:"copper", name:"Copper", ovr:48, days:5, family:"metal", shape:"rivet", material:"copper", border:"rivets", idle:"patina",
+  {id:"copper", name:"Copper", ovr:48, days:0, family:"metal", shape:"rivet", material:"copper", border:"rivets", idle:"patina",
    colors:{base:["#D9895A","#A45A2E","#5E2F14"], frame:["#F0B088","#7A3E1C"], ink:"#FFF1E6", accent:"#4FC3A8", flare:"#E88A4E"},
    effects:[{fx:"glints", color:"#FFD2B0", count:3, size:5}]},
-  {id:"marble", lightBase:1, name:"Marble", ovr:52, days:7, family:"stone", shape:"arch", material:"marble", border:"inlay", idle:"gloss",
+  {id:"marble", lightBase:1, name:"Marble", ovr:52, days:0, family:"stone", shape:"arch", material:"marble", border:"inlay", idle:"gloss",
    colors:{base:["#FBFAF7","#ECE9E2","#D9D4C9"], frame:["#E8D59A","#A88A3E"], ink:"#2C2A26", accent:"#B8973F", flare:"#F3EBD6"},
    effects:[{fx:"motes", shape:"star", color:"#D8B660", count:7, dir:"still", size:1.4, alpha:.8}]},
-  {id:"silver", lightBase:1, name:"Silver", ovr:55, days:10, family:"metal", shape:"shield", material:"mirror", border:"filigree", idle:"glint",
+  {id:"silver", lightBase:1, name:"Silver", ovr:55, days:0, family:"metal", shape:"shield", material:"mirror", border:"filigree", idle:"glint",
    colors:{base:["#F4F6FA","#A9B0BE","#565D6B"], frame:["#FFFFFF","#7C8394"], ink:"#12151C", accent:"#DCE3F0", flare:"#DDE6FF"},
    effects:[{fx:"glints", color:"#FFFFFF", count:4, size:7}]},
-  {id:"pearl", lightBase:1, name:"Pearl", ovr:58, days:12, family:"gem", shape:"oval", material:"nacre", border:"beads", idle:"iridesce",
+  {id:"pearl", lightBase:1, name:"Pearl", ovr:58, days:0, family:"gem", shape:"oval", material:"nacre", border:"beads", idle:"iridesce",
    colors:{base:["#FBF3F4","#EDE3F2","#DDE6F4"], frame:["#FFFFFF","#C9B8D8"], ink:"#3A2E44", accent:"#F2B8D0", flare:"#F6D8EA"},
    effects:[{fx:"motes", shape:"pearl", color:"#FFFFFF", count:9, dir:"float", size:3, alpha:.95}]},
-  {id:"cobalt", name:"Cobalt", ovr:61, days:14, family:"glass", shape:"bevel", material:"cobaltglass", border:"etched", idle:"etchpulse",
+  {id:"cobalt", name:"Cobalt", ovr:61, days:0, family:"glass", shape:"bevel", material:"cobaltglass", border:"etched", idle:"etchpulse",
    colors:{base:["#2A6BFF","#0D2E99","#040E3A"], frame:["#8FB2FF","#1A3FB8"], ink:"#EAF1FF", accent:"#7FA8FF", flare:"#2D6BFF"},
    effects:[{fx:"motes", shape:"speck", color:"#9FC0FF", count:14, dir:"up", size:1.2, alpha:.7, glow:1}]},
-  {id:"gold", name:"Gold", ovr:64, days:18, family:"metal", shape:"badge", material:"gold", border:"laurel", idle:"trophy",
+  {id:"gold", name:"Gold", ovr:64, days:0, family:"metal", shape:"badge", material:"gold", border:"laurel", idle:"trophy",
    colors:{base:["#FFE08A","#D4A437","#8A6212"], frame:["#FFF1B8","#A87C1E"], ink:"#3A2804", accent:"#FFF4C7", flare:"#FFD34D"},
    effects:[{fx:"sparkle", color:"#FFFBE6", count:3, size:9, burst:1}]},
-  {id:"topaz", name:"Topaz", ovr:66, days:21, family:"gem", shape:"cushion", material:"gem", cut:"step", border:"prongs", idle:"none",
+  {id:"topaz", name:"Topaz", ovr:66, days:0, family:"gem", shape:"cushion", material:"gem", cut:"step", border:"prongs", idle:"none",
    colors:{base:["#FFC25C","#E07B12","#7A3A04"], frame:["#FFE3A8","#B86A12"], ink:"#2E1702", accent:"#FFE0A0", flare:"#FFB030"},
    effects:[{fx:"caustics", color:"#FFE6A8", alpha:.38, rotate:1, scale:1.1}, {fx:"motes", shape:"dot", color:"#FFD98A", count:8, dir:"float", size:1.5, alpha:.6, glow:1}]},
-  {id:"ocean", name:"Ocean", ovr:68, days:25, family:"water", shape:"wave", material:"ocean", border:"foam", idle:"none",
+  {id:"ocean", name:"Ocean", ovr:68, days:0, family:"water", shape:"wave", material:"ocean", border:"foam", idle:"none",
    colors:{base:["#1FB5D6","#0A5D8C","#03203D"], frame:["#BDF4FF","#1686B0"], ink:"#EFFCFF", accent:"#8FE9FF", flare:"#22C6E8"},
    effects:[{fx:"caustics", color:"#BFF6FF", alpha:.32, scale:1.6}, {fx:"motes", shape:"bubble", color:"#D8FBFF", count:12, dir:"up", size:2.4, alpha:.7}]},
-  {id:"amethyst", name:"Amethyst", ovr:70, days:30, family:"gem", shape:"geode", material:"gem", cut:"geode", border:"crystals", idle:"shimmer",
+  {id:"amethyst", name:"Amethyst", ovr:70, days:0, family:"gem", shape:"geode", material:"gem", cut:"geode", border:"crystals", idle:"shimmer",
    colors:{base:["#B98CFF","#6A2FC2","#240A4F"], frame:["#E4D2FF","#5C24A8"], ink:"#F7F0FF", accent:"#D9BFFF", flare:"#A86BFF"},
    effects:[{fx:"glints", color:"#EBDDFF", count:4, size:6}]},
-  {id:"sapphire", name:"Sapphire", ovr:72, days:35, family:"gem", shape:"kite", material:"gem", cut:"lowpoly", border:"double", idle:"none",
+  {id:"sapphire", name:"Sapphire", ovr:72, days:10, family:"gem", shape:"kite", material:"gem", cut:"lowpoly", border:"double", idle:"none",
    colors:{base:["#3F74FF","#1437B8","#050F48"], frame:["#C3D3FF","#1E3FC2"], ink:"#F0F4FF", accent:"#9FB8FF", flare:"#2451E6"},
    effects:[{fx:"starglint", color:"#FFFFFF", rays:6, size:26}, {fx:"motes", shape:"star", color:"#BFD0FF", count:8, dir:"still", size:1.2, alpha:.7}]},
-  {id:"ruby", name:"Ruby", ovr:74, days:40, family:"gem", shape:"crest", material:"gem", cut:"brilliant", border:"bezel", idle:"heartbeat",
+  {id:"ruby", name:"Ruby", ovr:74, days:12, family:"gem", shape:"crest", material:"gem", cut:"brilliant", border:"bezel", idle:"heartbeat",
    colors:{base:["#FF3B5C","#B00C2A","#3D0010"], frame:["#FFD08A","#9E7424"], ink:"#FFF0F2", accent:"#FF8FA3", flare:"#FF1E46"},
    effects:[{fx:"heartbeat", color:"#FF2A4A"}, {fx:"motes", shape:"spark", color:"#FF5C74", count:10, dir:"up", size:1.3, alpha:.9, glow:1}]},
-  {id:"emerald", name:"Emerald", ovr:76, days:45, family:"gem", shape:"octagon", material:"gem", cut:"emerald", border:"steps", idle:"none",
+  {id:"emerald", name:"Emerald", ovr:76, days:14, family:"gem", shape:"octagon", material:"gem", cut:"emerald", border:"steps", idle:"none",
    colors:{base:["#3DDC84","#0B7A45","#012A17"], frame:["#B8FFD6","#0E6B3E"], ink:"#EDFFF5", accent:"#8BF5BD", flare:"#20D07A"},
    effects:[{fx:"beams", color:"#C8FFE0", count:4, bend:1, from:"top"}, {fx:"motes", shape:"dot", color:"#9CFFC8", count:8, dir:"float", size:1.2, alpha:.6, glow:1}]},
-  {id:"platinum", lightBase:1, name:"Platinum", ovr:78, days:50, family:"metal", shape:"clean", material:"platinum", border:"hairline", idle:"holo",
+  {id:"platinum", lightBase:1, name:"Platinum", ovr:78, days:16, family:"metal", shape:"clean", material:"platinum", border:"hairline", idle:"holo",
    colors:{base:["#F2F3F5","#D3D6DC","#AEB3BC"], frame:["#FFFFFF","#9DA3AE"], ink:"#1A1D23", accent:"#FFFFFF", flare:"#F4F7FF"},
    effects:[{fx:"motes", shape:"prism", color:"#FFFFFF", count:10, dir:"still", size:1.6, alpha:.9}]},
-  {id:"obsidian", name:"Obsidian", ovr:79, days:60, family:"glass", shape:"shard", material:"obsidian", border:"edgecut", idle:"razor",
+  {id:"obsidian", name:"Obsidian", ovr:79, days:18, family:"glass", shape:"shard", material:"obsidian", border:"edgecut", idle:"razor",
    colors:{base:["#1B1A22","#0B0A10","#000000"], frame:["#3A3848","#0A0A0E"], ink:"#F4F2FF", accent:"#FF4FA3", flare:"#9B5CFF"},
    effects:[{fx:"edgeglints", colors:["#FF4FA3","#4F7BFF"], count:5}]},
-  {id:"ember", name:"Ember", ovr:80, days:70, family:"fire", shape:"burnt", material:"charcoal", border:"cracks", idle:"smolder", crackColor:"#FF7A1A",
+  {id:"ember", name:"Ember", ovr:80, days:20, family:"fire", shape:"burnt", material:"charcoal", border:"cracks", idle:"smolder", crackColor:"#FF7A1A",
    colors:{base:["#2A2522","#161310","#060504"], frame:["#FF8A2A","#3A1A08"], ink:"#FFF0E0", accent:"#FF9A3C", flare:"#FF6A00"},
    effects:[{fx:"motes", shape:"spark", color:"#FFB050", count:22, dir:"up", size:1.4, alpha:1, glow:1, speed:1.6}]},
-  {id:"lava", name:"Lava", ovr:81, days:80, family:"fire", shape:"molten", material:"lava", border:"crust", idle:"none",
+  {id:"lava", name:"Lava", ovr:81, days:22, family:"fire", shape:"molten", material:"lava", border:"crust", idle:"none",
    colors:{base:["#3A1206","#1C0802","#0A0300"], frame:["#FF6A1A","#5A1A04"], ink:"#FFF2E4", accent:"#FFB347", flare:"#FF4500"},
    effects:[{fx:"lavaflow", color:"#FF7A12", hot:"#FFD24A"}, {fx:"heat"}, {fx:"motes", shape:"spark", color:"#FF9A30", count:8, dir:"up", size:1.8, alpha:.9, glow:1}]},
-  {id:"glacier", lightBase:1, name:"Glacier", ovr:82, days:90, family:"ice", shape:"ice", material:"glacier", border:"icicles", idle:"frost",
+  {id:"glacier", lightBase:1, name:"Glacier", ovr:82, days:24, family:"ice", shape:"ice", material:"glacier", border:"icicles", idle:"frost",
    colors:{base:["#E8F7FF","#9ED4F2","#3A86C2"], frame:["#FFFFFF","#7CC2EC"], ink:"#062443", accent:"#FFFFFF", flare:"#CFF0FF"},
    effects:[{fx:"mist", color:"#FFFFFF"}, {fx:"motes", shape:"snow", color:"#FFFFFF", count:14, dir:"down", size:1.8, alpha:.9}]},
-  {id:"lightning", name:"Lightning", ovr:83, days:100, family:"storm", shape:"bolt", material:"storm", border:"boltedge", idle:"none",
+  {id:"lightning", name:"Lightning", ovr:83, days:26, family:"storm", shape:"bolt", material:"storm", border:"boltedge", idle:"none",
    colors:{base:["#3A4152","#1C2130","#080A12"], frame:["#E6F0FF","#4A5A80"], ink:"#F2F6FF", accent:"#FFE95C", flare:"#FFF27A"},
    effects:[{fx:"bolts", color:"#E9F2FF", glow:"#9FC0FF"}, {fx:"motes", shape:"speck", color:"#CFE0FF", count:8, dir:"drift", size:1, alpha:.6, glow:1}]},
-  {id:"aurora", name:"Aurora", ovr:84, days:110, family:"cosmic", shape:"soft", material:"night", border:"stars", idle:"none",
+  {id:"aurora", name:"Aurora", ovr:84, days:28, family:"cosmic", shape:"soft", material:"night", border:"stars", idle:"none",
    colors:{base:["#0A2440","#06112A","#01040E"], frame:["#7CFFCB","#9A6BFF"], ink:"#F0FFF9", accent:"#7CFFCB", flare:"#5CFFB8"},
    effects:[{fx:"ribbons", colors:["#4F7BFF","#FF4FA3","#5CFFB8"]}, {fx:"motes", shape:"star", color:"#FFFFFF", count:26, dir:"still", size:.9, alpha:.9}]},
-  {id:"diamond", lightBase:1, name:"Diamond", ovr:85, days:120, family:"glass", shape:"brilliant", material:"diamond", cut:"brilliant", border:"crystalframe", idle:"fire",
+  {id:"diamond", lightBase:1, name:"Diamond", ovr:85, days:30, family:"glass", shape:"brilliant", material:"diamond", cut:"brilliant", border:"crystalframe", idle:"fire",
    colors:{base:["#FFFFFF","#E6EEF8","#C3D2E6"], frame:["#FFFFFF","#B7C6DA"], ink:"#0E1726", accent:"#FFFFFF", flare:"#FFFFFF"},
    effects:[{fx:"tiltsparkle", color:"#FFFFFF", count:4, size:10}]},
-  {id:"plasma", name:"Plasma", ovr:86, days:135, family:"storm", shape:"orb", material:"plasma", border:"electrodes", idle:"none",
+  {id:"plasma", name:"Plasma", ovr:86, days:32, family:"storm", shape:"orb", material:"plasma", border:"electrodes", idle:"none",
    colors:{base:["#1A0630","#0A0218","#000000"], frame:["#FF4FA3","#4F7BFF"], ink:"#FFF0FA", accent:"#FF7AC0", flare:"#FF3DA8"},
    effects:[{fx:"plasma", colors:["#FF4FA3","#4F7BFF","#FFFFFF"]}]},
-  {id:"nebula", name:"Nebula", ovr:87, days:150, family:"cosmic", shape:"portal", material:"space", border:"constellation", idle:"none",
+  {id:"nebula", name:"Nebula", ovr:87, days:34, family:"cosmic", shape:"portal", material:"space", border:"constellation", idle:"none",
    colors:{base:["#12062A","#07031A","#000000"], frame:["#C79BFF","#3A2A8A"], ink:"#F6F0FF", accent:"#FF8FD0", flare:"#B26BFF"},
    effects:[{fx:"nebula", colors:["#FF4FA3","#4F7BFF","#9A6BFF"]}, {fx:"motes", shape:"star", color:"#FFFFFF", count:40, dir:"still", size:.8, alpha:1}, {fx:"shooting", color:"#FFFFFF"}]},
-  {id:"vibranium", name:"Vibranium", ovr:88, days:165, family:"metal", shape:"tech", material:"vibranium", border:"circuit", idle:"absorb",
+  {id:"vibranium", name:"Vibranium", ovr:88, days:36, family:"metal", shape:"tech", material:"vibranium", border:"circuit", idle:"absorb",
    colors:{base:["#241638","#120A20","#05030A"], frame:["#8A5CFF","#1E1234"], ink:"#EDE4FF", accent:"#A77BFF", flare:"#7B3FF2"},
    effects:[{fx:"ripples", color:"#A77BFF"}, {fx:"motes", shape:"speck", color:"#A77BFF", count:14, dir:"in", size:1.2, alpha:.8, glow:1}]},
-  {id:"supernova", name:"Supernova", ovr:90, days:180, family:"cosmic", shape:"sun", material:"supernova", border:"corona", idle:"burn",
+  {id:"supernova", name:"Supernova", ovr:90, days:40, family:"cosmic", shape:"sun", material:"supernova", border:"corona", idle:"burn",
    colors:{base:["#FFFFFF","#FFD27A","#FF6A1A"], frame:["#FFFFFF","#FF9A3C"], ink:"#2A1000", accent:"#FFFFFF", flare:"#FFF4D6"},
    effects:[{fx:"flares", color:"#FFE8A8", hot:"#FFFFFF"}, {fx:"motes", shape:"spark", color:"#FFD27A", count:16, dir:"out", size:1.5, alpha:1, glow:1, speed:1.4}]},
-  {id:"blackhole", name:"Black Hole", ovr:92, days:200, family:"cosmic", shape:"ringed", material:"void", border:"horizon", idle:"warp",
+  {id:"blackhole", name:"Black Hole", ovr:92, days:44, family:"cosmic", shape:"ringed", material:"void", border:"horizon", idle:"warp",
    colors:{base:["#0A0612","#030206","#000000"], frame:["#FF4FA3","#2451E6"], ink:"#F4F0FF", accent:"#FF7AC0", flare:"#6A2CFF"},
    effects:[{fx:"accretion", colors:["#FF4FA3","#4F7BFF","#FFFFFF"]}]},
-  {id:"manna", lightBase:1, name:"Ascend", ovr:94, days:240, family:"holy", shape:"halo", material:"manna", border:"halo", idle:"radiant",
+  {id:"manna", lightBase:1, name:"Manna", ovr:94, days:50, family:"holy", shape:"halo", material:"manna", border:"halo", idle:"radiant",
    colors:{base:["#FFFFFF","#FFF8E6","#F2E2B4"], frame:["#FFFFFF","#E0C27A"], ink:"#3A2A05", accent:"#D8B25A", flare:"#FFF6DC"},
    effects:[{fx:"lightbeams", color:"#EAC46A"}, {fx:"motes", shape:"flake", color:"#C9A13E", count:22, dir:"down", size:1.8, alpha:.95, speed:.5}]}
 ];
@@ -1057,7 +1035,6 @@ function defaults(){
     sessions: [],
     restGoal: 10,
     restDays: {},
-    vacations: [],
     freezes: 1,
     frozen: {},
     freezeLog: [],
@@ -1080,7 +1057,6 @@ function normalize(d){
   if (!(out.streakGoal > 0)) out.streakGoal = 20;
   if (!(out.restGoal > 0)) out.restGoal = 10;
   if (!out.restDays || typeof out.restDays !== "object" || Array.isArray(out.restDays)) out.restDays = {};
-  out.vacations = (Array.isArray(out.vacations) ? out.vacations : []).filter(v => v && v.start && v.end && v.start <= v.end);
   if (typeof out.freezes !== "number" || !(out.freezes >= 0)) out.freezes = 1;
   out.freezes = Math.min(5, Math.floor(out.freezes));
   if (!out.frozen || typeof out.frozen !== "object" || Array.isArray(out.frozen)) out.frozen = {};
@@ -1133,9 +1109,6 @@ function todayRec(){
   return S.days[k];
 }
 const isRest = (k = dkey()) => !!(S.restDays && S.restDays[k]);
-/* Vacation: days inside a vacation range never break a streak, never use a freeze, and don't count against ratings */
-const onVacation = (k = dkey()) => (S.vacations || []).some(v => k >= v.start && k <= v.end);
-const paused = k => !!S.frozen[k] || onVacation(k);
 const showToday = t => !isRest() || !!t.rest;
 const todayHabits = id => S.habits[id].filter(showToday);
 const todayBonus = () => S.bonus.filter(showToday);
@@ -1164,7 +1137,7 @@ function recompute(){
 const MAX_FREEZES = 5;
 function streakEndingAt(k){
   let n = 0, guard = 0;
-  while ((hitDay(S.days[k]) || paused(k)) && guard++ < 4000) { if (hitDay(S.days[k])) n++; k = addDays(k, -1); }
+  while ((hitDay(S.days[k]) || S.frozen[k]) && guard++ < 4000) { if (hitDay(S.days[k])) n++; k = addDays(k, -1); }
   return n;
 }
 function streak(){
@@ -1201,7 +1174,7 @@ function processDays(){
     if (hitDay(S.days[d])) {
       const n = streakEndingAt(d);
       if (n > 0 && n % 7 === 0 && !earnedOn(d)) awardFreeze(d);
-    } else if (!paused(d) && S.freezes > 0 && streakEndingAt(addDays(d, -1)) > 0) {
+    } else if (!S.frozen[d] && S.freezes > 0 && streakEndingAt(addDays(d, -1)) > 0) {
       S.frozen[d] = true; S.freezes--; S.freezeLog.push({date: d, type: "used"}); used++;
     }
     S.lastProcessed = d; d = addDays(d, 1);
@@ -1230,7 +1203,7 @@ function longestStreak(){
     const end = dkey();
     while (k <= end && guard++ < 4000) {
       if (hitDay(S.days[k])) { run++; best = Math.max(best, run); }
-      else if (!paused(k) && k !== end) run = 0;
+      else if (!S.frozen[k] && k !== end) run = 0;
       k = addDays(k, 1);
     }
   }
@@ -1256,8 +1229,8 @@ function ratingWindow(){
   if (first && first > start) start = first;
   if (!first || start > end) return [today];
   const out = [];
-  for (let k = start; k <= end; k = addDays(k, 1)) if (!onVacation(k)) out.push(k);
-  return out.length ? out : [today];
+  for (let k = start; k <= end; k = addDays(k, 1)) out.push(k);
+  return out;
 }
 /* Completion rate for one category (or every task when cat is "all").
    Regular habits set the bar; bonuses in the category count as extra credit, capped at 100%. */
@@ -1716,42 +1689,28 @@ const CardFX = {
 const trackedDays = () => Object.keys(S.days).filter(k => (S.days[k].total || 0) + (S.days[k].marks || 0) > 0).length;
 function currentRun(){
   const today = dkey(); let k = hitDay(S.days[today]) ? today : addDays(today, -1);
-  if (!hitDay(S.days[k]) && !paused(k)) return null;
+  if (!hitDay(S.days[k]) && !S.frozen[k]) return null;
   let start = k, len = 0, g = 0;
-  while ((hitDay(S.days[k]) || paused(k)) && g++ < 4000) { if (hitDay(S.days[k])) { len++; start = k; } k = addDays(k, -1); }
+  while ((hitDay(S.days[k]) || S.frozen[k]) && g++ < 4000) { if (hitDay(S.days[k])) { len++; start = k; } k = addDays(k, -1); }
   return len ? {start, len, before: k} : null;
 }
 function bestBefore(end){
   const keys = Object.keys(S.days).filter(k => k < end).sort(); if (!keys.length) return 0;
   let k = keys[0], run = 0, best = 0, g = 0;
-  while (k < end && g++ < 4000) { if (hitDay(S.days[k])) { run++; best = Math.max(best, run); } else if (!paused(k)) run = 0; k = addDays(k, 1); }
+  while (k < end && g++ < 4000) { if (hitDay(S.days[k])) { run++; best = Math.max(best, run); } else if (!S.frozen[k]) run = 0; k = addDays(k, 1); }
   return best;
 }
 const perfectDay = r => r && (r.total || 0) > 0 && (r.done || 0) >= r.total;
-/* Longest run of days that hit the daily goal (bonuses count). Freezes keep the run alive. */
-function bestPerfectStreak(){
-  const keys = Object.keys(S.days).sort();
-  if (!keys.length) return 0;
-  let k = keys[0], run = 0, best = 0, g = 0;
-  const end = dkey();
-  Object.keys(S.frozen || {}).forEach(f => { if (f < k) k = f; });
-  while (k <= end && g++ < 4000) {
-    if (hitDay(S.days[k])) { run++; best = Math.max(best, run); }
-    else if (!paused(k) && k !== end) run = 0;
-    k = addDays(k, 1);
-  }
-  return best;
-}
 function unlockCard(t, again){
   const C = S.cards;
   if (!C.unlocked[t.id]) { C.unlocked[t.id] = dkey(); S.notices.push({id: uid(), kind: "card", ed: t.id, date: dkey(), text: t.id === "wood" ? "Your first card is ready. Tap to open it." : "You unlocked the " + t.name + " card. Tap to open it."}); }
   else if (again) S.notices.push({id: uid(), kind: "card", ed: t.id, date: dkey(), text: "You earned " + t.name + " again. That's " + C.count[t.id] + " times."});
 }
 function checkCards(){
-  const C = S.cards, r = cardRatings(), ps = bestPerfectStreak();
+  const C = S.cards, r = cardRatings(), td = trackedDays();
   Object.keys(C.unlocked).forEach(id => { if (!ALL_CARDS().some(t => t.id === id)) { delete C.unlocked[id]; delete C.opened[id]; } });
   if (r.ovr !== null) C.bestOvr = Math.max(C.bestOvr || 0, r.ovr);
-  CARD_TIERS.forEach(t => { if (!C.unlocked[t.id] && (t.ovr === 0 || (r.ovr !== null && r.ovr >= t.ovr && ps >= t.days))) unlockCard(t); });
+  CARD_TIERS.forEach(t => { if (!C.unlocked[t.id] && (t.ovr === 0 || (r.ovr !== null && r.ovr >= t.ovr && td >= t.days))) unlockCard(t); });
   const earn = id => { C.count[id] = (C.count[id] || 0) + 1; unlockCard(SPECIAL_CARDS.find(x => x.id === id), true); };
   const run = currentRun();
   /* Kintsugi: a new streak reaches 7 days after an earlier streak (3+ days) broke */
@@ -1783,16 +1742,16 @@ function collectionHTML(){
   const C = S.cards, n = CARD_TIERS.filter(t => C.unlocked[t.id]).length, nx = nextTier(), fresh = ALL_CARDS().filter(t => C.unlocked[t.id] && !C.opened[t.id]).length;
   return '<div class="section-h">Card collection <span class="optional">' + n + ' of ' + CARD_TIERS.length + ' tiers</span></div>' +
     '<button class="bx-link" data-action="openBinder"><span><b>' + (fresh ? fresh + (fresh === 1 ? " new card to open" : " new cards to open") : "Open your collection") + '</b>' +
-      (nx ? '<small>Next: ' + esc(nx.name) + ' at OVR ' + nx.ovr + (nx.days ? ' and a ' + nx.days + '-day streak' : "") + '</small>' : '<small>Every tier unlocked</small>') + '</span>' + ic("chev") + '</button>';
+      (nx ? '<small>Next: ' + esc(nx.name) + ' at OVR ' + nx.ovr + (nx.days ? ' after ' + nx.days + ' days tracked' : "") + '</small>' : '<small>Every tier unlocked</small>') + '</span>' + ic("chev") + '</button>';
 }
 
 /* ---------- Collection binder page ---------- */
 function renderCollection(){
-  const C = S.cards, pv = !!S.devPreview, r = cardRatings(), td = bestPerfectStreak(), n = CARD_TIERS.filter(t => C.unlocked[t.id]).length;
+  const C = S.cards, pv = !!S.devPreview, r = cardRatings(), td = trackedDays(), n = CARD_TIERS.filter(t => C.unlocked[t.id]).length;
   const cell = t => {
     const special = isSpecial(t), got = !!C.unlocked[t.id], opened = !!C.opened[t.id];
     if (pv) return '<div class="bx-cell"><button class="bx-card" data-action="previewTier" data-v="' + t.id + '" aria-label="Preview ' + esc(t.name) + '">' + tierCardHTML(t, {ratings: r}) + '</button><div class="bx-n">' + esc(t.name) + '</div><div class="bx-s">' + (special ? esc(t.banner.toLowerCase()) : "OVR " + t.ovr) + '</div></div>';
-    if (!got) return '<div class="bx-cell">' + lockedCardHTML(t.name, special ? t.when : "OVR " + t.ovr + (t.days && td < t.days ? " · " + t.days + "-day streak" : "")) + '</div>';
+    if (!got) return '<div class="bx-cell">' + lockedCardHTML(t.name, special ? t.when : "OVR " + t.ovr + (t.days && td < t.days ? " · " + t.days + " days" : "")) + '</div>';
     if (!opened) return '<div class="bx-cell"><button class="bx-pack" data-action="openPack" data-v="' + t.id + '" style="--flare:' + t.colors.flare + '"><span class="bx-packlogo">M</span><b>New card</b><small>Tap to open</small></button><div class="bx-n">' + esc(special ? t.name : "Mystery tier") + '</div></div>';
     const on = C.equipped === t.id;
     return '<div class="bx-cell">' + tierCardHTML(t, {ratings: r}) + '<div class="bx-n">' + esc(t.name) + (special && C.count[t.id] > 1 ? ' <span class="bx-x">x' + C.count[t.id] + '</span>' : "") + '</div>' +
@@ -1956,19 +1915,6 @@ function sessCard(x, hero){
     '<div class="se-right">' + (x.done ? '<span class="se-check">' + ic("check") + '</span>' :
       (goals ? '<span class="se-gc"><b>' + (hit ? hit + "/" : "") + goals + '</b>' + (goals === 1 ? "goal" : "goals") + '</span>' : "")) + '</div></button>';
 }
-function vacationHTML(){
-  const today = dkey(), list = (S.vacations || []).filter(v => v.end >= today).sort((a, b) => a.start.localeCompare(b.start));
-  const span = v => fmtLong(v.start) + " to " + fmtLong(v.end);
-  return '<section class="set-card"><div class="set-title">Vacation</div>' +
-    list.map(v => '<div class="rd-row">' + ic("leaf") + '<div>' + (v.start <= today ? "On vacation now" : "Upcoming") + '<small>' + span(v) + '</small></div>' +
-      '<button class="icon-btn danger" data-action="delVac" data-v="' + v.id + '" aria-label="Remove vacation">' + ic("x") + '</button></div>').join("") +
-    '<div class="set-row" style="gap:10px;flex-wrap:wrap">' +
-      '<label class="fl" style="flex:1;min-width:130px;margin:0">Start<input class="txt" type="date" id="vacStart" min="' + today + '"></label>' +
-      '<label class="fl" style="flex:1;min-width:130px;margin:0">End<input class="txt" type="date" id="vacEnd" min="' + today + '"></label></div>' +
-    '<div style="padding:0 18px 12px"><button class="btn btn-secondary" data-action="saveVac">' + ic("plus") + 'Add vacation</button>' +
-    '<p id="vacErr" style="color:var(--pink);font-size:14px;margin:8px 0 0"></p></div>' +
-    '<p class="note-card" style="padding:0 18px 16px">Days on vacation don\'t break your streak, don\'t use a freeze, and don\'t count against your ratings. Anything you do check off still counts.</p></section>';
-}
 function restDaysHTML(){
   const today = dkey(), up = Object.keys(S.restDays).filter(k => k >= today).sort();
   return '<section class="set-card" style="margin-top:22px"><div class="set-title" style="display:flex;justify-content:space-between;align-items:center">Rest days' +
@@ -2076,7 +2022,7 @@ const Pack = {
     this.calm = FXCALM(); this.resize(); this.parts = []; this.rings = []; this.flashA = 0; this.speed = 1; this.bgA = 0; this.ambient = null;
     this.el.className = "pack show"; this.el.style.setProperty("--flare", t.colors.flare); document.body.style.overflow = "hidden";
     this.stage.innerHTML = '<div class="po-packwrap"><div class="po-pack" id="poPack"><div class="po-pack-in"><svg viewBox="0 0 100 100" class="po-logo" aria-hidden="true"><circle cx="50" cy="50" r="40" fill="none" stroke="#2451E6" stroke-width="6"/><circle cx="50" cy="50" r="30" fill="none" stroke="#FF1493" stroke-width="6"/><circle cx="50" cy="50" r="20" fill="none" stroke="#fff" stroke-width="6"/><path d="M42 50l6 6 12-13" fill="none" stroke="#FF1493" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
-      '<span class="po-lbl">MANNA</span><span class="po-sub">' + (this.mode === "preview" ? "Preview" : isSpecial(t) ? "Special edition" : "Player card") + '</span></div><svg class="po-cracks" viewBox="0 0 100 144" aria-hidden="true"></svg></div><p class="po-tap">Tap to open</p></div>';
+      '<span class="po-lbl">ASCEND</span><span class="po-sub">' + (this.mode === "preview" ? "Preview" : isSpecial(t) ? "Special edition" : "Player card") + '</span></div><svg class="po-cracks" viewBox="0 0 100 144" aria-hidden="true"></svg></div><p class="po-tap">Tap to open</p></div>';
     this.waiting = true;
     if (!this.raf) { this.last = performance.now(); this.raf = requestAnimationFrame(tt => this.loop(tt)); }
   },
@@ -2254,7 +2200,7 @@ function bannersInner(){
     '<button class="banner-x" data-action="dismissNotice" data-id="' + n.id + '" aria-label="Dismiss">' + ic("x") + '</button></div>').join("");
   return notes + S.banners.slice(-2).map(id => {
     const r = S.rewards.find(x => x.id === id);
-    return '<div class="banner reward"><button class="banner-main" data-action="tab" data-v="rewards">' + ic("unlock") +
+    return '<div class="banner"><button class="banner-main" data-action="tab" data-v="rewards">' + ic("unlock") +
       '<span style="min-width:0"><div class="banner-t">Reward unlocked</div><div class="banner-n">' + esc(r.name) + '</div></span></button>' +
       '<button class="banner-x" data-action="dismissBanner" data-id="' + id + '" aria-label="Dismiss">' + ic("x") + '</button></div>';
   }).join("");
@@ -2364,7 +2310,6 @@ function renderToday(){
   recompute();
   return '<div class="view"><header class="top"><div><h1 class="large">Ascend</h1><p class="sub">' + fmtLong(dkey()) + '</p></div></header>' +
     '<div id="banners">' + bannersInner() + '</div>' +
-    (onVacation() ? '<div class="rest-card">' + ic("leaf") + '<div><b>On vacation</b><span>Your streak is paused until you\'re back</span></div></div>' : "") +
     (isRest() ? '<div class="rest-card">' + ic("leaf") + '<div><b>Rest day</b><span>' + S.restGoal + ' tasks makes a full day</span></div></div>' : "") +
     scoreHTML() + goalsHTML() +
     '<div class="checklist">' + fixHTML() + PHASES.map(phaseHTML).join("") + bonusHTML() + '</div></div>';
@@ -2405,7 +2350,7 @@ function renderHistory(){
   h += '<div class="list">' + keys.map(k => {
     const d = S.days[k] || {pct: 0, done: 0, total: 0}, ref = S.reflections[k], open = UI.openHist === k && ref;
     return '<button class="hrow" data-action="hist" data-k="' + k + '"' + (ref ? ' aria-expanded="' + !!open + '"' : "") + '><div class="hrow-main"><div class="hrow-d">' + fmtDay(k) + '</div>' +
-      '<div class="hrow-s"><span>' + marksOf(d) + ' of ' + goalOf(d) + ' tasks</span>' + (d.rest ? '<span class="tag rest">Rest day</span>' : "") + (S.frozen[k] ? '<span class="tag ice">Frozen</span>' : "") + (onVacation(k) ? '<span class="tag rest">Vacation</span>' : "") + (ref ? '<span class="tag">Reflection</span>' : "") + '</div></div>' +
+      '<div class="hrow-s"><span>' + marksOf(d) + ' of ' + goalOf(d) + ' tasks</span>' + (d.rest ? '<span class="tag rest">Rest day</span>' : "") + (S.frozen[k] ? '<span class="tag ice">Frozen</span>' : "") + (ref ? '<span class="tag">Reflection</span>' : "") + '</div></div>' +
       '<div class="hrow-p"><div class="hrow-pct' + (hitDay(d) ? " hit" : "") + '">' + dayPct(d) + '%</div><div class="mini"><i style="width:' + dayPct(d) + '%"></i></div></div></button>' +
       (open ? reflectionDetail(ref) : "");
   }).join("") + '</div></div>';
@@ -2572,7 +2517,7 @@ function readPhoto(file){
 /* ---------- Export and import ---------- */
 async function backup(){
   const data = JSON.stringify({app: "manna", version: 3, exportedAt: new Date().toISOString(), data: S});
-  const filename = "ascend-backup-" + dkey() + ".json", blob = new Blob([data], {type: "application/json"});
+  const filename = "manna-backup-" + dkey() + ".json", blob = new Blob([data], {type: "application/json"});
   try {
     const file = new File([blob], filename, {type: "application/json"});
     if (navigator.canShare && navigator.canShare({files: [file]}) && /iPhone|iPad|iPod/.test(navigator.userAgent)) { await navigator.share({files: [file], title: "Ascend backup"}); toast("Backup ready"); return; }
@@ -2594,7 +2539,6 @@ function renderSettings(){
     '<button class="icon-btn" data-action="restGoal" data-dir="-1" aria-label="Lower rest-day target">' + ic("minus") + '</button><span>' + S.restGoal + '</span>' +
     '<button class="icon-btn" data-action="restGoal" data-dir="1" aria-label="Raise rest-day target">' + ic("plus") + '</button></div></div>' +
     '<p class="note-card" style="padding:0 18px 16px">Habits and bonuses both count. On rest days only tasks marked Rest day show up. You start with 1 streak freeze and earn another every 7 days of streak, up to 5. If a day ends under its goal, a freeze is used automatically to save your streak.</p></section>';
-  h += vacationHTML();
   h += '<section class="set-card"><div class="set-title">Scene</div>' +
     '<div class="set-row"><span style="flex:1;font-size:16px">Daily verse</span><button class="sw' + (S.verseOn === false ? "" : " on") + '" data-action="setting" data-k="verseOn" aria-label="Daily verse"></button></div>' +
     '<div class="set-row"><span style="flex:1;font-size:16px">Lock-in sound</span><button class="sw' + (S.soundOn === false ? "" : " on") + '" data-action="setting" data-k="soundOn" aria-label="Lock-in sound"></button></div>' +
@@ -2764,34 +2708,6 @@ function addHabit(phase){
   const n = $("#add-" + phase); if (n) n.focus();
 }
 
-/* ---------- Haptics ----------
-   Android: uses the vibration motor directly.
-   iPhone (iOS 18+): Safari has no vibration API, but flipping a hidden
-   switch-style checkbox fires the system haptic tap. A rapid series of
-   taps makes the bigger "all done" buzz. */
-const Haptics = (() => {
-  const canVibrate = typeof navigator.vibrate === "function";
-  let lbl = null;
-  function sw(){
-    if (!lbl) {
-      lbl = document.createElement("label");
-      lbl.setAttribute("aria-hidden", "true");
-      lbl.style.cssText = "position:fixed;left:-9999px;top:0;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none";
-      const inp = document.createElement("input");
-      inp.type = "checkbox"; inp.setAttribute("switch", ""); inp.tabIndex = -1;
-      lbl.appendChild(inp); document.body.appendChild(lbl);
-    }
-    try { lbl.click(); } catch (err) {}
-  }
-  return {
-    tap(){ if (canVibrate) navigator.vibrate(20); else sw(); },
-    big(){
-      if (canVibrate) navigator.vibrate([70, 60, 70, 60, 70, 90, 260]);
-      else [0, 80, 160, 240, 380, 470, 560].forEach(t => setTimeout(sw, t));
-    }
-  };
-})();
-
 document.addEventListener("click", async e => {
   const el = e.target.closest("[data-action]");
   if (!el || el.disabled) return;
@@ -2810,7 +2726,6 @@ document.addEventListener("click", async e => {
       const r = todayRec(), i = r.checked.indexOf(id), wasHit = hitDay(r);
       if (i >= 0) r.checked.splice(i, 1); else r.checked.push(id);
       recompute();
-      if (!wasHit && hitDay(r)) Haptics.big(); else if (i < 0) Haptics.tap();
       const fresh = evalRewards();
       save();
       el.classList.toggle("done", i < 0);
@@ -2825,7 +2740,6 @@ document.addEventListener("click", async e => {
       const i = r.bonus.indexOf(id), wasHit = hitDay(r);
       if (i >= 0) r.bonus.splice(i, 1); else r.bonus.push(id);
       recompute();
-      if (!wasHit && hitDay(r)) Haptics.big(); else if (i < 0) Haptics.tap();
       const fresh = evalRewards(); save();
       el.classList.toggle("done", i < 0); el.setAttribute("aria-pressed", String(i < 0));
       patchBonus(); patchScore();
@@ -2946,8 +2860,7 @@ document.addEventListener("click", async e => {
       if (raw === "" || !Number.isInteger(v) || v < 0 || v > 100) { $("#slErr").textContent = "Enter a whole number from 0 to 100."; return; }
       const r = todayRec(), wasHit = hitDay(r);
       r.sleepScore = v; if (!r.checked.includes(id)) r.checked.push(id);
-      recompute();
-      if (!wasHit && hitDay(r)) Haptics.big(); else Haptics.tap(); evalRewards(); closeSheet(); render(true);
+      recompute(); evalRewards(); closeSheet(); render(true);
       toast(!wasHit && hitDay(r) ? "Streak day locked in" : "Sleep score saved"); break;
     }
     case "clearSleep": {
@@ -2956,16 +2869,6 @@ document.addEventListener("click", async e => {
     }
 
     /* Sessions */
-    case "saveVac": {
-      const a1 = $("#vacStart").value, b1 = $("#vacEnd").value, err = $("#vacErr");
-      if (!a1 || !b1) { err.textContent = "Pick a start and an end date."; return; }
-      if (b1 < a1) { err.textContent = "The end date has to be on or after the start date."; return; }
-      S.vacations = (S.vacations || []).concat({id: uid(), start: a1, end: b1});
-      recompute(); evalRewards(); save(); render(true); toast("Vacation saved"); break;
-    }
-    case "delVac":
-      S.vacations = (S.vacations || []).filter(v => v.id !== el.dataset.v);
-      recompute(); evalRewards(); save(); render(true); toast("Vacation removed"); break;
     case "newRest": restSheet(); break;
     case "pickRest": {
       const k = el.dataset.v;
@@ -3198,7 +3101,7 @@ document.addEventListener("change", async e => {
         (obj.exportedAt ? ' from ' + esc(new Date(obj.exportedAt).toLocaleDateString("en-US", {month: "short", day: "numeric", year: "numeric"})) : "") +
         '. What\'s here now will be gone.</p><div class="sheet-actions"><button class="btn btn-pink" data-action="confirmRestore">Replace data</button>' +
         '<button class="btn btn-text" data-action="closeSheet">Cancel</button></div>');
-    } catch (err) { toast("That isn't an Ascend backup file"); }
+    } catch (err) { toast("That isn't a Ascend backup file"); }
     return;
   }
   if (t.dataset.rename) {
@@ -3335,16 +3238,11 @@ function phaseFrac(id){
   const list = todayHabits(id), r = todayRec();
   return list.length ? list.filter(h => r.checked.includes(h.id)).length / list.length : 0;
 }
-/* What a ring shows: hitting the day's goal (bonuses count) closes every ring, even if a phase has unchecked tasks */
-const ringFrac = id => hitDay(todayRec()) ? 1 : phaseFrac(id);
 function setRing(root, id, f){
   const c = root && root.querySelector('[data-ring="' + id + '"]'); if (!c) return;
-  const g = RING.find(x => x.id === id), C = circ(g.r), full = f >= 0.999;
-  /* a full ring gets a dash longer than the circle, so there's no hairline gap where the ends meet */
-  c.style.strokeDasharray = full ? (C + 2).toFixed(2) + " " + (C + 2).toFixed(2) : C.toFixed(2);
-  c.style.strokeDashoffset = full ? "0" : (C * (1 - Math.max(0, f))).toFixed(2);
+  const g = RING.find(x => x.id === id);
+  c.style.strokeDashoffset = (circ(g.r) * (1 - Math.max(0, Math.min(1, f)))).toFixed(2);
   c.classList.toggle("zero", f < 0.004);
-  c.classList.toggle("full", full);
 }
 const Dawn = {
   reduce: !!(window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches),
@@ -3898,7 +3796,7 @@ const Dawn = {
   },
   apply(animate){
     const root = $("#dawnRings");
-    RING.forEach(g => setRing(root, g.id, ringFrac(g.id)));
+    RING.forEach(g => setRing(root, g.id, phaseFrac(g.id)));
     this.count(todayRec().pct, animate ? 700 : 0);
     this.pending = false;
     this.perfect();
@@ -3916,8 +3814,6 @@ const Dawn = {
   sync(){
     if (!this.el) return;
     const r = todayRec(), hitNow = hitDay(r);
-    this.el.classList.toggle("hit", hitNow);
-    this.el.style.setProperty("--prog", Math.min(1, r.pct / 100).toFixed(3));
     if (this.lastHit === false && hitNow) Sound.play();
     this.lastHit = hitNow;
     if (this.bg && this.tod === "evening" && hitNow !== !!this.lit) {
@@ -3926,7 +3822,7 @@ const Dawn = {
       else this.draw(performance.now());
     }
     this.texts();
-    const mini = $("#miniRings"); RING.forEach(g => setRing(mini, g.id, ringFrac(g.id)));
+    const mini = $("#miniRings"); RING.forEach(g => setRing(mini, g.id, phaseFrac(g.id)));
     $("#mbPct").textContent = r.pct + "%";
     if (this.pileMax) { this.pileTarget = this.pileMax * r.pct / 100; if (!this.running) { this.pile = this.pileTarget; this.draw(performance.now()); } }
     if (!this.opened) return;
@@ -3936,17 +3832,17 @@ const Dawn = {
     this.opened = true;
     const root = $("#dawnRings"), box = root;
     if (this.reduce) {
-      box.classList.add("pre"); RING.forEach(g => setRing(root, g.id, ringFrac(g.id)));
+      box.classList.add("pre"); RING.forEach(g => setRing(root, g.id, phaseFrac(g.id)));
       this.count(todayRec().pct, 0);
       requestAnimationFrame(() => requestAnimationFrame(() => box.classList.remove("pre")));
       this.perfect(); return;
     }
     const cs = RING.map(g => root.querySelector('[data-ring="' + g.id + '"]'));
-    cs.forEach((c, i) => { c.style.transition = "none"; c.style.strokeDasharray = circ(RING[i].r).toFixed(2); c.style.strokeDashoffset = circ(RING[i].r).toFixed(2); });
+    cs.forEach((c, i) => { c.style.transition = "none"; c.style.strokeDashoffset = circ(RING[i].r).toFixed(2); });
     void root.offsetWidth;
     RING.forEach((g, i) => setTimeout(() => {
       cs[i].style.transition = "stroke-dashoffset .8s cubic-bezier(.33,0,.2,1), opacity .2s ease";
-      setRing(root, g.id, ringFrac(g.id));
+      setRing(root, g.id, phaseFrac(g.id));
     }, 80 + i * 200));
     setTimeout(() => cs.forEach(c => c.style.transition = ""), 1400);
     this.shown = 0; this.count(todayRec().pct, 1200);
