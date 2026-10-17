@@ -40,7 +40,8 @@
 
   CHANGELOG
   v1.1  Edit past days and streak-gated cards
-        - Arrows next to the date on Today let you fill in the last 3 days.
+        - Tap any of the last 3 days in History (or use the arrows next to
+          the date on Today) to fill it in.
           Backfilled days count toward your streak, and a freeze that was
           spent on that day comes back.
         - Each card (after the starter Wood card) needs a current streak as
@@ -231,6 +232,11 @@ input,textarea{font:inherit;color:var(--text)}
 .list{background:var(--card);border:1px solid var(--line);border-radius:20px;margin-top:14px;overflow:hidden}
 .hrow{width:100%;display:flex;align-items:center;gap:14px;padding:14px 18px;min-height:64px;border-top:1px solid var(--line)}
 .hrow:first-child{border-top:0}
+.hrow-d{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tag.edit{display:inline-flex;align-items:center;gap:4px;color:var(--blue-text);background:var(--blue-soft)}
+.tag.edit .ic{width:12px;height:12px;stroke-width:2.2}
+.hrow.editable{background:rgba(41,82,227,.06)}
+.hrow-ref{display:block;width:100%;text-align:left;padding:0 18px 12px;color:var(--blue-text);font-size:13px;font-weight:650;background:rgba(41,82,227,.06)}
 .hrow-main{flex:1;min-width:0}
 .hrow-d{font-size:16px;font-weight:600}
 .hrow-s{font-size:13px;color:var(--text3);margin-top:2px;display:flex;gap:8px;align-items:center}
@@ -1153,6 +1159,7 @@ function vkey(){
   return v && v < t && v >= addDays(t, -BACKFILL_DAYS) ? v : t;
 }
 const viewingPast = () => vkey() !== dkey();
+const canEditDay = k => { const t = dkey(); return k <= t && k >= addDays(t, -BACKFILL_DAYS); };
 function dayRec(k){
   if (!S.days[k]) S.days[k] = {checked: [], pct: 0, done: 0, total: 0};
   return S.days[k];
@@ -2473,16 +2480,19 @@ function reflectionDetail(r){
 }
 function renderHistory(){
   recompute();
-  const keys = Array.from(new Set(Object.keys(S.days).concat(Object.keys(S.reflections), Object.keys(S.frozen)))).sort().reverse();
+  const today = dkey(), recent = [];
+  for (let i = 0; i <= BACKFILL_DAYS; i++) recent.push(addDays(today, -i));
+  const keys = Array.from(new Set(Object.keys(S.days).concat(Object.keys(S.reflections), Object.keys(S.frozen), recent))).filter(k => k <= today).sort().reverse();
   const count = Object.keys(S.reflections).length;
-  let h = '<div class="view"><header class="top"><div><h1 class="large">History</h1><p class="sub">Every day you\'ve opened Ascend</p></div></header>' +
+  let h = '<div class="view"><header class="top"><div><h1 class="large">History</h1><p class="sub">Tap any of the last ' + BACKFILL_DAYS + ' days to fill it in</p></div></header>' +
     '<button class="export" data-action="export">' + ic("copy") + '<div><div class="export-t">Export week</div><div class="export-s">' +
     (count ? "Copies your last " + Math.min(7, count) + (Math.min(7, count) === 1 ? " reflection" : " reflections") + " as plain text" : "Save a reflection first, then export it here") + '</div></div></button>';
   h += '<div class="list">' + keys.map(k => {
-    const d = S.days[k] || {pct: 0, done: 0, total: 0}, ref = S.reflections[k], open = UI.openHist === k && ref;
-    return '<button class="hrow" data-action="hist" data-k="' + k + '"' + (ref ? ' aria-expanded="' + !!open + '"' : "") + '><div class="hrow-main"><div class="hrow-d">' + fmtDay(k) + '</div>' +
+    const d = S.days[k] || {pct: 0, done: 0, total: 0}, ref = S.reflections[k], open = UI.openHist === k && ref, ed = canEditDay(k);
+    return '<button class="hrow' + (ed ? " editable" : "") + '" data-action="' + (ed ? "editDay" : "hist") + '" data-k="' + k + '"' + (ref && !ed ? ' aria-expanded="' + !!open + '"' : "") + '><div class="hrow-main"><div class="hrow-d">' + fmtDay(k) + (ed ? '<span class="tag edit">' + ic("pen") + (k === today ? "Today" : "Edit") + '</span>' : "") + '</div>' +
       '<div class="hrow-s"><span>' + marksOf(d) + ' of ' + goalOf(d) + ' tasks</span>' + (d.rest ? '<span class="tag rest">Rest day</span>' : "") + (S.frozen[k] ? '<span class="tag ice">Frozen</span>' : "") + (onVacation(k) ? '<span class="tag rest">Vacation</span>' : "") + (ref ? '<span class="tag">Reflection</span>' : "") + '</div></div>' +
       '<div class="hrow-p"><div class="hrow-pct' + (hitDay(d) ? " hit" : "") + '">' + dayPct(d) + '%</div><div class="mini"><i style="width:' + dayPct(d) + '%"></i></div></div></button>' +
+      (ref && ed ? '<button class="hrow-ref" data-action="hist" data-k="' + k + '" aria-expanded="' + !!open + '">' + (open ? "Hide reflection" : "Show reflection") + '</button>' : "") +
       (open ? reflectionDetail(ref) : "");
   }).join("") + '</div></div>';
   return h;
@@ -3185,6 +3195,14 @@ document.addEventListener("click", async e => {
     case "closeSheet": closeSheet(); if (UI.tab === "plan") render(true); break;
 
     /* History */
+    case "editDay": {
+      const k = el.dataset.k, today = dkey();
+      if (!canEditDay(k)) break;
+      UI.viewKey = k === today ? null : k; UI.tab = "today";
+      render();
+      requestAnimationFrame(() => { const t = $(".daynav"); if (t) window.scrollTo(0, Math.max(0, t.getBoundingClientRect().top + window.scrollY - 90)); });
+      break;
+    }
     case "hist": {
       const k = el.dataset.k;
       if (!S.reflections[k]) return;
