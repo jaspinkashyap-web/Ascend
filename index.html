@@ -76,7 +76,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#000000">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -105,7 +105,9 @@
   padding-top:env(safe-area-inset-top,0px);
   padding-bottom:env(safe-area-inset-bottom,0px);
 }
-html{scroll-padding-top:env(safe-area-inset-top,0px);background:#000}
+html{scroll-padding-top:env(safe-area-inset-top,0px);background:#000;touch-action:manipulation}
+/* No double-tap zoom anywhere */
+*{touch-action:manipulation}
 *,*::before,*::after{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--text);font-family:var(--font);font-size:16px;line-height:1.5;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent;-webkit-text-size-adjust:100%;overscroll-behavior-y:none}
 button{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;cursor:pointer;text-align:inherit}
@@ -211,6 +213,10 @@ input,textarea{font:inherit;color:var(--text)}
 .habit:active .check{transform:scale(.88)}
 .habit-name{font-size:16px;font-weight:500;line-height:1.35;transition:color .2s}
 .habit.done .habit-name{color:var(--text3)}
+.must-tag{flex:none;font-size:11px;font-weight:750;letter-spacing:.04em;text-transform:uppercase;color:var(--pink);border:1px solid color-mix(in srgb,var(--pink) 55%,transparent);padding:2px 7px;border-radius:8px;margin-left:8px}
+.habit.done .must-tag{opacity:.45}
+.rest-pill.must.on{color:var(--pink);background:var(--pink-soft);border:1px solid transparent;padding:3px 10px}
+.tag.must{color:var(--pink);background:var(--pink-soft)}
 .bonus{--pc:var(--pink)}
 .bonus-bar{height:6px;border-radius:3px;background:var(--raised);margin:0 20px 16px;overflow:hidden}
 .bonus-bar i{display:block;height:100%;width:0;background:var(--pink);border-radius:3px;transition:width .4s var(--ease)}
@@ -493,7 +499,7 @@ input[type=number].txt::-webkit-inner-spin-button{-webkit-appearance:none;margin
 .reward.ready .reward-days{color:#fff}
 .reward-n.slot{color:var(--blue-text)}
 /* Dawn */
-.dawn{position:relative;height:90vh;height:90svh;min-height:540px;overflow:hidden;background:#000;isolation:isolate;touch-action:pan-y}
+.dawn{position:relative;height:90vh;height:90svh;min-height:540px;overflow:hidden;background:#000;isolation:isolate;touch-action:pan-y !important}
 .dawn canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
 .dawn-glow{position:absolute;left:-25%;right:-25%;bottom:-38%;height:75%;background:radial-gradient(closest-side,rgba(255,168,96,.26),rgba(255,120,90,.09) 55%,rgba(255,120,90,0) 78%);opacity:0;transition:opacity 2s ease;z-index:0;pointer-events:none}
 .dawn-bg{position:absolute;inset:0;z-index:0;pointer-events:none;will-change:opacity}
@@ -570,6 +576,7 @@ input[type=number].txt::-webkit-inner-spin-button{-webkit-appearance:none;margin
 .se-hero{position:relative;display:block;width:100%;overflow:hidden;border-radius:26px;padding:22px 22px 20px;text-align:left;isolation:isolate;
   background:linear-gradient(150deg,color-mix(in srgb,var(--tc) 42%,#000) 0%,#07091A 58%,#000 100%);border:1px solid color-mix(in srgb,var(--tc) 50%,transparent);transition:transform .15s}
 .se-hero:active{transform:scale(.985)}
+.se-stack{display:grid;gap:14px}
 .se-hero-glow{position:absolute;right:-30%;top:-45%;width:85%;aspect-ratio:1;border-radius:50%;z-index:-1;
   background:radial-gradient(closest-side,color-mix(in srgb,var(--tc) 55%,transparent),transparent);opacity:.7}
 .se-hero-top{display:flex;justify-content:space-between;align-items:center}
@@ -1204,6 +1211,7 @@ function defaults(){
     affirm: {},
     cards: {unlocked: {}, opened: {}, equipped: "wood", count: {}, seen: null},
     streakGoal: 20,
+    goalLog: [{from: "0000-01-01", goal: 20, rest: 10}],
     days: {}, reflections: {}, goals: [], rewards: presetRewards(), collapsed: {}, banners: []
   };
 }
@@ -1242,6 +1250,15 @@ function normalize(d){
   if (!out.tests || typeof out.tests !== "object" || Array.isArray(out.tests)) out.tests = {};
   if (!d.tasksReset1) { PHASES.forEach(p => { out.habits[p.id] = []; }); out.bonus = []; out.tasksReset1 = true; }
   if (!d.sleepSeeded) { out.habits.morning.unshift(sleepTask()); out.sleepSeeded = true; }
+  /* Goal history: changing the daily target only applies from that day forward */
+  if (!Array.isArray(out.goalLog) || !out.goalLog.length) out.goalLog = [{from: "0000-01-01", goal: out.streakGoal, rest: out.restGoal}];
+  out.goalLog = out.goalLog.filter(e => e && e.from && e.goal > 0 && e.rest > 0).sort((a, b) => a.from.localeCompare(b.from));
+  if (!out.goalLog.length) out.goalLog = [{from: "0000-01-01", goal: out.streakGoal, rest: out.restGoal}];
+  Object.keys(out.days).forEach(k => {
+    const r = out.days[k]; if (!r || r.goal > 0) return;
+    let e = out.goalLog[0]; out.goalLog.forEach(x => { if (x.from <= k) e = x; });
+    r.goal = r.rest ? e.rest : e.goal;
+  });
   out.savedAt = Number(out.savedAt) || 0;
   return out;
 }
@@ -1290,11 +1307,24 @@ const showToday = t => !isRest() || !!t.rest;
 const todayHabits = id => S.habits[id].filter(showToday);
 const todayBonus = () => S.bonus.filter(showToday);
 const goalOf = r => (r && r.goal) || S.streakGoal;
+/* The targets in effect on day k */
+function goalAt(k){ let e = S.goalLog[0]; S.goalLog.forEach(x => { if (x.from <= k) e = x; }); return e; }
+/* Change a target from today on. Days before today keep the target they had. */
+function setGoalFromToday(field, val){
+  const t = dkey(), cur = goalAt(t);
+  S.goalLog = S.goalLog.filter(e => e.from < t);
+  S.goalLog.push(Object.assign({}, cur, {from: t, [field]: val}));
+  S.streakGoal = goalAt(t).goal; S.restGoal = goalAt(t).rest;
+  recomputeToday();
+}
+/* Restamp today's record even when the Today tab is showing a past day */
+function recomputeToday(){ const v = UI.viewKey; UI.viewKey = null; recompute(); UI.viewKey = v; if (v) recompute(); }
 const marksOf = r => r ? (r.done || 0) + (r.bdone != null ? r.bdone : (r.bonus || []).length) : 0;
 /* Completion keeps counting past 100% when you go beyond your goal */
 const dayPct = r => Math.round(marksOf(r) / goalOf(r) * 100);
 const barPct = r => Math.min(100, dayPct(r));
-const hitDay = r => marksOf(r) >= goalOf(r);
+/* A day only counts when it hits its goal and every must-do task is checked */
+const hitDay = r => marksOf(r) >= goalOf(r) && !(r && r.mustLeft > 0);
 const listFor = ph => ph === "bonus" ? S.bonus : S.habits[ph];
 function bonusPts(r){
   const ids = new Set(r.bonus || []);
@@ -1308,7 +1338,14 @@ function recompute(){
   const bids = new Set(S.bonus.map(b => b.id)), bvis = new Set(todayBonus().map(b => b.id));
   r.bonus = (r.bonus || []).filter(id => bids.has(id));
   r.bdone = r.bonus.filter(id => bvis.has(id)).length;
-  if (isRest()) { r.rest = true; r.goal = S.restGoal; } else { delete r.rest; delete r.goal; }
+  const ge = goalAt(vkey());
+  if (isRest()) { r.rest = true; r.goal = ge.rest; } else { delete r.rest; r.goal = ge.goal; }
+  /* Must-do tasks showing that day; stamped on the day so changing them later never regrades the past */
+  const bset = new Set(r.bonus);
+  const musts = PHASES.flatMap(p => todayHabits(p.id).filter(h => h.must).map(h => r.checked.includes(h.id)))
+    .concat(todayBonus().filter(b => b.must).map(b => bset.has(b.id)));
+  r.mustTotal = musts.length; r.mustLeft = musts.filter(x => !x).length;
+  if (!r.mustTotal) { delete r.mustTotal; delete r.mustLeft; }
   r.bonusPts = bonusPts(r);
   r.marks = marksOf(r);
   r.pct = dayPct(r);
@@ -2066,6 +2103,9 @@ function catPill(x, phase){
 function restPill(x, phase){
   return '<button class="rest-pill' + (x.rest ? " on" : "") + '" data-action="restToggle" data-phase="' + phase + '" data-id="' + x.id + '" aria-pressed="' + !!x.rest + '">' + ic("leaf") + 'Rest day</button>';
 }
+function mustPill(x, phase){
+  return '<button class="rest-pill must' + (x.must ? " on" : "") + '" data-action="mustToggle" data-phase="' + phase + '" data-id="' + x.id + '" aria-pressed="' + !!x.must + '">' + ic("lock") + 'Must do</button>';
+}
 function restChip(phase){
   const on = !!(UI.addRest || {})[phase];
   return '<button class="rest-chip' + (on ? " on" : "") + '" data-action="addRest" data-phase="' + phase + '" aria-pressed="' + on + '">' + ic("leaf") + 'Show on rest days</button>';
@@ -2123,14 +2163,14 @@ function planHTML(t){
   close();
   return out;
 }
-function sessCard(x, hero){
+function sessCard(x, hero, first){
   const t = stype(x.type), d = parseKey(x.date);
   const goals = x.goals.length, hit = x.goals.filter(g => g.done).length;
   const meta = [relDay(x.date), fmtTime(x.time)].filter(Boolean).join(", ");
   if (hero) {
     return '<button class="se-hero" style="--tc:' + t.color + '" data-action="openSess" data-id="' + x.id + '">' +
       '<div class="se-hero-glow" aria-hidden="true"></div>' +
-      '<div class="se-hero-top"><span class="se-type">' + ic(t.icon) + esc(t.id) + '</span><span class="se-next">Next up</span></div>' +
+      '<div class="se-hero-top"><span class="se-type">' + ic(t.icon) + esc(t.id) + '</span><span class="se-next">' + (first ? "Next up" : esc(relDay(x.date))) + '</span></div>' +
       '<div class="se-hero-title">' + esc(x.title || t.id) + '</div>' +
       '<div class="se-hero-meta">' + ic("clock") + esc(meta) + '</div>' +
       (goals ? '<div class="se-hero-goals">' + x.goals.slice(0, 3).map(g => '<div class="se-hg">' + ic("target") + '<span>' + esc(g.text) + '</span></div>').join("") +
@@ -2189,11 +2229,11 @@ function renderPlan(){
       '<button class="btn btn-primary" data-action="newSess">' + ic("plus") + 'Add a session</button></div></div>';
   }
   if (up.length) {
-    h += '<div style="margin-top:22px">' + sessCard(up[0], true) + '</div>';
+    h += '<div style="margin-top:22px">' + sessCard(up[0], true, true) + '</div>';
     const restWeek = thisWeek.slice(1);
-    if (restWeek.length) h += '<div class="section-h">This week</div>' + restWeek.map(x => sessCard(x)).join("");
+    if (restWeek.length) h += '<div class="section-h">This week</div><div class="se-stack">' + restWeek.map(x => sessCard(x, true)).join("") + '</div>';
     const rest = up[0].date > weekEnd ? later.slice(1) : later;
-    if (rest.length) h += '<div class="section-h">Later</div>' + rest.map(x => sessCard(x)).join("");
+    if (rest.length) h += '<div class="section-h">Later</div><div class="se-stack">' + rest.map(x => sessCard(x, true)).join("") + '</div>';
   } else {
     h += '<div class="big-empty"><p>Nothing coming up. Add your next session.</p><button class="btn btn-primary" data-action="newSess">' + ic("plus") + 'Add a session</button></div>';
   }
@@ -2449,6 +2489,7 @@ function bannersInner(){
 }
 function tasksText(r){
   const m = marksOf(r), g = goalOf(r);
+  if (m >= g && r.mustLeft > 0) return m + " tasks done. Finish " + r.mustLeft + " must-do " + (r.mustLeft === 1 ? "task" : "tasks") + " to lock it in";
   return m >= g ? m + " tasks done, streak day locked in" : m + " of " + g + (r.rest ? " rest-day tasks" : " tasks today");
 }
 function segData(){
@@ -2512,7 +2553,7 @@ function phaseHTML(p){
     const c = catOf(h.cat), sc = h.kind === "sleep" && r.sleepScore != null ? r.sleepScore : null;
     return '<button class="habit' + (on ? " done" : "") + (c ? " cat" : "") + '"' + (c ? ' style="--pc:' + c.color + '"' : "") + ' data-action="toggle" data-id="' + h.id + '" aria-pressed="' + on + '">' +
       '<span class="check"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 12.5l4 4 9-9"/></svg></span>' +
-      '<span class="habit-name">' + esc(h.name) + '</span>' +
+      '<span class="habit-name">' + esc(h.name) + '</span>' + (h.must ? '<span class="must-tag">Must</span>' : "") +
       (h.kind === "sleep" ? '<span class="sl-badge">' + (sc != null ? sc : "Enter") + '</span>' : "") + '</button>';
   }).join("");
   if (!list.length) rows = '<div class="phase-empty">' + (isRest() ? "Nothing here on rest days." : "No habits here yet. Add them in Settings.") + '</div>';
@@ -2536,7 +2577,7 @@ function bonusHTML(){
     const c = catOf(b.cat);
     return '<button class="habit' + (on ? " done" : "") + (c ? " cat" : "") + '"' + (c ? ' style="--pc:' + c.color + '"' : "") + ' data-action="btoggle" data-id="' + b.id + '" aria-pressed="' + on + '">' +
       '<span class="check"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 12.5l4 4 9-9"/></svg></span>' +
-      '<span class="habit-name">' + esc(b.name) + '</span><span class="pts">+' + b.pts + '</span></button>';
+      '<span class="habit-name">' + esc(b.name) + '</span>' + (b.must ? '<span class="must-tag">Must</span>' : "") + '<span class="pts">+' + b.pts + '</span></button>';
   }).join("") || '<div class="phase-empty">No bonuses yet. Add them in Settings.</div>';
   return '<section class="phase bonus' + (closed ? " closed" : "") + '" id="phase-bonus">' +
     '<button class="phase-head" data-action="phase" data-id="bonus" aria-expanded="' + !closed + '">' +
@@ -2681,7 +2722,7 @@ function renderHistory(){
   h += '<div class="list">' + keys.map(k => {
     const d = S.days[k] || {pct: 0, done: 0, total: 0}, ref = S.reflections[k], open = UI.openHist === k && ref, ed = canEditDay(k);
     return '<button class="hrow' + (ed ? " editable" : "") + '" data-action="' + (ed ? "editDay" : "hist") + '" data-k="' + k + '"' + (ref && !ed ? ' aria-expanded="' + !!open + '"' : "") + '><div class="hrow-main"><div class="hrow-d">' + fmtDay(k) + (ed ? '<span class="tag edit">' + ic("pen") + (k === today ? "Today" : "Edit") + '</span>' : "") + '</div>' +
-      '<div class="hrow-s"><span>' + marksOf(d) + ' of ' + goalOf(d) + ' tasks</span>' + (d.rest ? '<span class="tag rest">Rest day</span>' : "") + (S.frozen[k] ? '<span class="tag ice">Frozen</span>' : "") + (onVacation(k) ? '<span class="tag rest">Vacation</span>' : "") + (ref ? '<span class="tag">Reflection</span>' : "") + '</div></div>' +
+      '<div class="hrow-s"><span>' + marksOf(d) + ' of ' + goalOf(d) + ' tasks</span>' + (d.rest ? '<span class="tag rest">Rest day</span>' : "") + (d.mustLeft > 0 ? '<span class="tag must">Must-do missed</span>' : "") + (S.frozen[k] ? '<span class="tag ice">Frozen</span>' : "") + (onVacation(k) ? '<span class="tag rest">Vacation</span>' : "") + (ref ? '<span class="tag">Reflection</span>' : "") + '</div></div>' +
       '<div class="hrow-p"><div class="hrow-pct' + (hitDay(d) ? " hit" : "") + '">' + dayPct(d) + '%</div><div class="mini"><i style="width:' + barPct(d) + '%"></i></div></div></button>' +
       (ref && ed ? '<button class="hrow-ref" data-action="hist" data-k="' + k + '" aria-expanded="' + !!open + '">' + (open ? "Hide reflection" : "Show reflection") + '</button>' : "") +
       (open ? reflectionDetail(ref) : "");
@@ -2857,7 +2898,7 @@ function renderSettings(){
     '<div class="set-row"><span style="flex:1;font-size:16px;line-height:1.35">Tasks a rest day needs to count</span><div class="stepper">' +
     '<button class="icon-btn" data-action="restGoal" data-dir="-1" aria-label="Lower rest-day target">' + ic("minus") + '</button><span>' + S.restGoal + '</span>' +
     '<button class="icon-btn" data-action="restGoal" data-dir="1" aria-label="Raise rest-day target">' + ic("plus") + '</button></div></div>' +
-    '<p class="note-card" style="padding:0 18px 16px">Habits and bonuses both count. On rest days only tasks marked Rest day show up. You start with 1 streak freeze and earn another every 7 days of streak, up to 5. If a day ends under its goal, a freeze is used automatically to save your streak.</p></section>';
+    '<p class="note-card" style="padding:0 18px 16px">Habits and bonuses both count. Changing a target only applies from today on, so past days keep the target they had. Tasks marked Must do have to be checked for the day to count. On rest days only tasks marked Rest day show up. You start with 1 streak freeze and earn another every 7 days of streak, up to 5. If a day ends under its goal, a freeze is used automatically to save your streak.</p></section>';
   h += vacationHTML();
   h += '<section class="set-card"><div class="set-title">Scene</div>' +
     '<div class="set-row"><span style="flex:1;font-size:16px">Daily verse</span><button class="sw' + (S.verseOn === false ? "" : " on") + '" data-action="setting" data-k="verseOn" aria-label="Daily verse"></button></div>' +
@@ -2867,7 +2908,7 @@ function renderSettings(){
   PHASES.forEach(p => {
     const list = S.habits[p.id];
     h += '<section class="set-card"><div class="set-title">' + p.name + '</div>' +
-      list.map((x, i) => '<div class="set-row"><div class="set-col"><input class="set-input" data-rename="' + x.id + '" data-phase="' + p.id + '" value="' + esc(x.name) + '" maxlength="60" aria-label="Habit name"><div class="set-pills">' + catPill(x, p.id) + restPill(x, p.id) + '</div></div>' +
+      list.map((x, i) => '<div class="set-row"><div class="set-col"><input class="set-input" data-rename="' + x.id + '" data-phase="' + p.id + '" value="' + esc(x.name) + '" maxlength="60" aria-label="Habit name"><div class="set-pills">' + catPill(x, p.id) + restPill(x, p.id) + mustPill(x, p.id) + '</div></div>' +
         '<button class="icon-btn" data-action="moveHabit" data-phase="' + p.id + '" data-id="' + x.id + '" data-dir="-1" aria-label="Move up"' + (i === 0 ? " disabled" : "") + '>' + ic("up") + '</button>' +
         '<button class="icon-btn" data-action="moveHabit" data-phase="' + p.id + '" data-id="' + x.id + '" data-dir="1" aria-label="Move down"' + (i === list.length - 1 ? " disabled" : "") + '>' + ic("down") + '</button>' +
         '<button class="icon-btn danger" data-action="deleteHabit" data-phase="' + p.id + '" data-id="' + x.id + '" aria-label="Delete habit">' + ic("trash") + '</button></div>').join("") +
@@ -2876,7 +2917,7 @@ function renderSettings(){
   });
   h += '<section class="set-card" style="--pc:var(--pink)"><div class="set-title">Bonuses</div>' +
 
-    S.bonus.map((x, i) => '<div class="set-row"><div class="set-col"><input class="set-input" data-rename="' + x.id + '" data-phase="bonus" value="' + esc(x.name) + '" maxlength="60" aria-label="Bonus name"><div class="set-pills">' + catPill(x, "bonus") + restPill(x, "bonus") + '</div></div>' +
+    S.bonus.map((x, i) => '<div class="set-row"><div class="set-col"><input class="set-input" data-rename="' + x.id + '" data-phase="bonus" value="' + esc(x.name) + '" maxlength="60" aria-label="Bonus name"><div class="set-pills">' + catPill(x, "bonus") + restPill(x, "bonus") + mustPill(x, "bonus") + '</div></div>' +
       '<button class="pts-btn" data-action="bonusPts" data-id="' + x.id + '" aria-label="Points, tap to change">+' + x.pts + '</button>' +
       '<button class="icon-btn" data-action="moveHabit" data-phase="bonus" data-id="' + x.id + '" data-dir="-1" aria-label="Move up"' + (i === 0 ? " disabled" : "") + '>' + ic("up") + '</button>' +
       '<button class="icon-btn" data-action="moveHabit" data-phase="bonus" data-id="' + x.id + '" data-dir="1" aria-label="Move down"' + (i === S.bonus.length - 1 ? " disabled" : "") + '>' + ic("down") + '</button>' +
@@ -3582,6 +3623,12 @@ document.addEventListener("click", async e => {
     case "delRest":
       delete S.restDays[el.dataset.v];
       recompute(); evalRewards(); render(true); toast("Rest day removed"); break;
+    case "mustToggle": {
+      const t = listFor(el.dataset.phase).find(x => x.id === id);
+      if (t) { t.must = !t.must; if (!t.must) delete t.must; }
+      recomputeToday(); checkEarnToday(); evalRewards(); UI.dirty = true; save(); render(true);
+      toast(t && t.must ? "Must do from today on" : "No longer a must do"); break;
+    }
     case "restToggle": {
       const t = listFor(el.dataset.phase).find(x => x.id === id);
       if (t) { t.rest = !t.rest; if (!t.rest) delete t.rest; }
@@ -3593,7 +3640,8 @@ document.addEventListener("click", async e => {
       el.classList.toggle("on", UI.addRest[ph]); break;
     }
     case "restGoal":
-      S.restGoal = Math.max(1, Math.min(99, S.restGoal + Number(el.dataset.dir)));
+      setGoalFromToday("rest", Math.max(1, Math.min(99, S.restGoal + Number(el.dataset.dir))));
+      checkEarnToday(); evalRewards(); UI.dirty = true; save();
       recompute(); evalRewards(); render(true); break;
     case "newSess": sessSheet(null); break;
     case "openSess": openSess(id); return;
@@ -3730,8 +3778,8 @@ document.addEventListener("click", async e => {
       recompute(); render(true); break;
     }
     case "streakGoal":
-      S.streakGoal = Math.max(1, Math.min(99, S.streakGoal + Number(el.dataset.dir)));
-      evalRewards();
+      setGoalFromToday("goal", Math.max(1, Math.min(99, S.streakGoal + Number(el.dataset.dir))));
+      checkEarnToday(); evalRewards(); UI.dirty = true; save();
       render(true); break;
     case "addHabit": addHabit(el.dataset.phase); break;
     case "moveHabit": {
@@ -4635,6 +4683,17 @@ window.addEventListener("resize", () => { if ($("#pack").classList.contains("sho
 render();
 maybeSetup();
 if ("serviceWorker" in navigator && /^https?:/.test(location.protocol)) window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {}));
+})();
+
+/* iPhone backup for double-tap and pinch zoom */
+(() => {
+  let last = 0;
+  document.addEventListener("touchend", e => {
+    const now = Date.now();
+    if (now - last < 300 && !e.target.closest("input,textarea,select")) e.preventDefault();
+    last = now;
+  }, {passive: false});
+  ["gesturestart", "gesturechange"].forEach(t => document.addEventListener(t, e => e.preventDefault(), {passive: false}));
 })();
 </script>
 </body>
